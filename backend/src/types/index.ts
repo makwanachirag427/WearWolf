@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { Types } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export interface Address {
   fullName: string;
@@ -32,4 +32,17 @@ export interface UserDocument extends UserType {
 
 export interface RequestType extends Request {
   user?: UserType;
+}
+
+export interface ProductDocument extends Document {
+  _id: string;
+  title: string;
+  description: string;
+  price: number;
+  images:string[];
+  category: string;
+  sizes?: string[];
+  color : string;
+  countInStock : number;
+  isFeatured : boolean;
 }

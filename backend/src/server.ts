@@ -2,15 +2,16 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { ENVVARS } from "./uitls/envVars";
+import { connectDB } from "./config/db";
 
 //routes
 import authRoutes from "./routes/auth.route";
+import userRoutes from "./routes/user.route";
 import productRoutes from "./routes/product.route";
 import cartRoutes from "./routes/cart.route";
 import paymentRoutes from "./routes/payment.route";
 import couponRoutes from "./routes/coupon.route";
 import analyticsRoutes from "./routes/coupon.route";
-import { connectDB } from "./config/db";
 
 const app = express();
 const PORT = ENVVARS.PORT || 5000;
@@ -26,6 +27,7 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/payments", paymentRoutes);

@@ -21,7 +21,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
 
     setCookies(res, accessToken, refreshToken);
 
-    res.status(200).json({
+    res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
@@ -110,12 +110,3 @@ export const refreshToken = async (
   }
 };
 
-export const PLACEHOLDER = async (
-  req: RequestType,
-  res: Response
-): Promise<void> => {
-  try {
-  } catch (error) {
-    HandleError(res, error, "PLACEHOLDER controller");
-  }
-};
