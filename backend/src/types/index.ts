@@ -35,14 +35,48 @@ export interface RequestType extends Request {
 }
 
 export interface ProductDocument extends Document {
-  _id: string;
+  _id: Types.ObjectId;
   title: string;
   description: string;
   price: number;
-  images:string[];
+  images: string[];
   category: string;
   sizes?: string[];
-  color : string;
-  countInStock : number;
-  isFeatured : boolean;
+  color: string;
+  countInStock: number;
+  isFeatured: boolean;
+}
+
+export interface CouponDocument extends Document {
+  code: string;
+  discountPercentage: number;
+  expirationDate: Date;
+  isActive: boolean;
+  userId: Types.ObjectId;
+}
+
+export interface OrderDocument extends Document {
+  user: Types.ObjectId;
+  products: { product: Types.ObjectId; quantity: number; price: number }[];
+  totalAmount: number;
+  stripeSessionId: string;
+}
+
+export interface ProductItem {
+  id: string;
+  quantity: number;
+  price: number;
+}
+
+export type SessionMetadata = {
+  userId: string;
+  couponCode?: string;
+  products: string;
+};
+
+export interface AnalyticsData {
+  users: number;
+  products: number;
+  totalSales: number;
+  totalRevenue: number;
 }
