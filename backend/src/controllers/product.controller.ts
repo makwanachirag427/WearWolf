@@ -69,7 +69,7 @@ export const getRecommendedProducts = async (
       },
     ]);
 
-    res.status(200).json(recommendedProducts );
+    res.status(200).json(recommendedProducts);
   } catch (error) {
     HandleError(res, error, "getRecommendedProducts controller");
   }
@@ -123,7 +123,7 @@ export const createProduct = async (
       price,
       category,
       color,
-      sizes,
+      sizes: JSON.parse(sizes),
       countInStock,
       images: imageUrls,
     });
@@ -131,7 +131,7 @@ export const createProduct = async (
     await newProduct.save();
     res.status(200).json(newProduct);
   } catch (error) {
-    HandleError(res, error, "PLACEHOLDER controller");
+    HandleError(res, error, "createProduct controller");
   }
 };
 
@@ -161,7 +161,7 @@ export const updateProduct = async (
       res.status(404).json({ message: "Product not found" });
       return;
     }
-    res.status(200).json({ message: "product updated", product });
+    res.status(200).json(product);
   } catch (error) {
     HandleError(res, error, "updateProduct controller");
   }

@@ -21,10 +21,10 @@ router.get("/product/:id", getProductById);
 
 //admin only
 router.post(
-  "/",
+  "/create",
   protectRoute,
   adminRoute,
-  upload.array("images", 5),
+  upload.array("images", 4),
   createProduct
 );
 router.patch("/featured/:id", protectRoute, adminRoute, toggleFeaturedProducts);
