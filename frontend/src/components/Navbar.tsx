@@ -17,7 +17,7 @@ const Navbar = () => {
   
 
   return (
-    <header className="fixed top-0 left-0 w-full border-b-1 border-gray-700 p-3 z-20 bg-neutral-900">
+    <header className="fixed top-0 left-0 w-full border-b-1 border-gray-800 p-3 z-20 bg-neutral-900">
       <motion.nav
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

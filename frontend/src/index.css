@@ -13,3 +13,12 @@
   background-attachment: fixed;
 }
 
+
+html {
+  /* For modern browsers */
+  scrollbar-gutter: stable;
+
+  /* Fallback for older browsers */
+  overflow-y: scroll;
+}
+

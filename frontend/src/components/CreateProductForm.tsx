@@ -370,7 +370,8 @@ const CreateProductForm = () => {
             className="flex items-center gap-2  w-30  justify-center py-2
              font-semibold text-black bg-white 
              rounded-lg  transition-all duration-300 ease-in-out
-             hover:opacity-90 cursor-pointer"
+             hover:opacity-90 cursor-pointer disabled:cursor-not-allowed disabled:opacity-80"
+             disabled={loading}
           >
             Reset
           </button>

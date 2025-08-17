@@ -4,12 +4,11 @@ import {
   ShoppingBasket,
   type LucideIcon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import CreateProductForm from "../components/CreateProductForm";
 import ProductList from "../components/ProductList";
 import AnalyticsTab from "../components/AnalyticsTab";
-import { useProductStore } from "../store/useProductStore";
+import { useState } from "react";
 
 const tabs: { id: string; label: string; icon: LucideIcon }[] = [
   { id: "create", label: "Create Product", icon: PlusCircle },
@@ -19,11 +18,7 @@ const tabs: { id: string; label: string; icon: LucideIcon }[] = [
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState<string>("create");
-  const { getProducts } = useProductStore();
-
-  useEffect(() => {
-    getProducts();
-  }, [getProducts]);
+  
 
   return (
     <div className="pt-20 h-full w-full">

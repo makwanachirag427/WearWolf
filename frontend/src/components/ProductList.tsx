@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useProductStore } from "../store/useProductStore";
-import { LoaderCircle, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, LoaderCircle, Star } from "lucide-react";
 import { type UpdateProduct, type Product } from "../types";
 import { categories } from "../utils/constants";
+import Swal from "sweetalert2";
+
+const getOptimizedImage = (url: string) => {
+  return url.replace("/upload/", "/upload/w_400,h_400,c_fill,q_auto,f_auto/");
+};
 
 const ProductList = () => {
   const {
@@ -11,8 +16,12 @@ const ProductList = () => {
     toggleFeaturedProducts,
     deleteProduct,
     updateProduct,
+    currentPage,
+    totalPages,
+    getProducts,
   } = useProductStore();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(currentPage);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState<UpdateProduct>({
     title: "",
@@ -21,7 +30,34 @@ const ProductList = () => {
     countInStock: 0,
   });
 
+  useEffect(() => {
+    getProducts({
+      page,
+      limit: 5,
+    });
+  }, [getProducts, page]);
+
   const handleDelete = async (id: string): Promise<void> => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to undo this!",
+      icon: "warning",
+      background: "#1f2937", // Tailwind's gray-800
+      color: "#f9fafb", // Tailwind's gray-50
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626", // Tailwind's red-500
+      cancelButtonColor: "#374151", // Tailwind's gray-700
+      confirmButtonText: "Yes, delete it!",
+      customClass: {
+        popup: "rounded-lg shadow-lg",
+        title: "text-lg font-semibold",
+        confirmButton: "px-4 py-2 rounded",
+        cancelButton: "px-4 py-2 rounded",
+      },
+    });
+
+    if (!result.isConfirmed) return;
+
     setDeletingId(id);
     await deleteProduct(id);
     setDeletingId(null);
@@ -50,8 +86,8 @@ const ProductList = () => {
   };
 
   return (
-    <div className="h-full w-full  flex justify-center p-4 sm:p-8">
-      <div className="overflow-x-auto w-full max-w-6xl">
+    <div className="h-full w-full  flex flex-col justify-center p-4 sm:p-4">
+      <div className="overflow-x-auto w-full max-w-6xl mx-auto">
         <table className="min-w-[600px] sm:min-w-full rounded-lg overflow-hidden">
           <thead className="bg-gray-600 text-gray-200 text-sm sm:text-base">
             <tr>
@@ -77,9 +113,10 @@ const ProductList = () => {
               <tr key={product._id} className="border-b border-gray-700">
                 <td className="p-2 flex gap-2 items-center">
                   <img
-                    src={product.images[0]}
+                    src={getOptimizedImage(product.images[0])}
                     alt="product image"
                     className=" object-cover size-11 rounded-full"
+                    loading="lazy"
                   />
                   <span>{product.title}</span>
                 </td>
@@ -131,6 +168,30 @@ const ProductList = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center items-center gap-2 mt-2">
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+          className="px-3 py-1 font-semibold hover:text-red-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <ChevronLeft />
+        </button>
+
+        <span className="px-3 py-1 font-semibold">
+          Page {page} of {totalPages}
+        </span>
+
+        <button
+          disabled={page === totalPages}
+          onClick={() => setPage(page + 1)}
+          className="px-3 py-1 hover:text-red-700 transition-all duration-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <ChevronRight />
+        </button>
+      </div>
+
       {/* modal */}
       {editingProduct && (
         <div

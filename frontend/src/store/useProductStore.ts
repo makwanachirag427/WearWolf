@@ -7,12 +7,27 @@ import { handleAxiosError } from "../utils/errorHandler";
 export const useProductStore = create<ProductStore>((set) => ({
   products: [],
   loading: false,
-  getProducts: async (category) => {
+  totalPages: 1,
+  currentPage: 1,
+  getProducts: async (filters = {}) => {
     set({ loading: true });
     try {
-      const query = category ? `?category=${encodeURIComponent(category)}` : "";
-      const res = await axios.get(`/products${query}`);
-      set({ products: res.data });
+      const res = await axios.get("/products", {
+        params: {
+          ...(filters.category && { category: filters.category }),
+          ...(filters.min !== undefined && { min: filters.min }),
+          ...(filters.max !== undefined && { max: filters.max }),
+          ...(filters.sort && { sort: filters.sort }),
+          ...(filters.featured !== undefined && { featured: filters.featured }),
+          ...(filters.page && { page: filters.page }),
+          ...(filters.limit && { limit: filters.limit }),
+        },
+      });
+       set({
+        products: res.data.products,
+        currentPage: res.data.currentPage ?? 1,
+        totalPages: res.data.totalPages ?? 1,
+      });
     } catch (error) {
       handleAxiosError(error, "Error in get getProducts method");
     } finally {

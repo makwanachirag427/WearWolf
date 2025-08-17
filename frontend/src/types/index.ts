@@ -38,10 +38,22 @@ export interface Product extends NewProductForm {
   images: string[];
 }
 
+export interface ProductFiltersType {
+  category?: string;
+  min?: number;
+  max?: number;
+  sort?: string;
+  featured?: boolean;
+  page?: number;
+  limit?: number;
+}
+
 export interface ProductStore {
   products: Product[];
   loading: boolean;
-  getProducts: (category?: string) => Promise<void>;
+  totalPages: number;
+  currentPage: number;
+  getProducts: (filters: ProductFiltersType) => Promise<void>;
   getProductById: (id: string) => Promise<void>;
   getFeaturedProducts: () => Promise<void>;
   getRecommendedProducts: () => Promise<void>;
@@ -56,4 +68,12 @@ export interface UpdateProduct {
   price: number;
   category: string;
   countInStock: number;
+}
+
+export interface ProductCardProps {
+  product: Product;
+}
+export interface ProductFiltersProps {
+  filters: ProductFiltersType;
+  setFilters: React.Dispatch<React.SetStateAction<ProductFiltersType>>;
 }
