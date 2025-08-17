@@ -3,20 +3,75 @@ import { RequestType } from "../types";
 import { HandleError } from "../uitls/error";
 import Product from "../models/product.model";
 import cloudinary from "../config/cloudinary";
+import { Query } from "mongoose";
 
 export const getAllProducts = async (
   req: RequestType,
   res: Response
 ): Promise<void> => {
-  const { category } = req.query;
+  const {
+    category,
+    min,
+    max,
+    sort,
+    featured,
+    page = 1,
+    limit = 10,
+  } = req.query;
   try {
     const filter: any = {};
 
+    //Category filter
     if (category) {
       filter.category = category;
     }
-    const products = await Product.find(filter);
-    res.status(200).json(products);
+
+    //Price in range
+    if (min !== undefined && max !== undefined) {
+      filter.price = { $gte: Number(min), $lte: Number(max) };
+    }
+
+    //Featured filter
+    if (featured === "true") {
+      filter.isFeatured = true;
+    }
+
+    let query = Product.find(filter);
+
+    // Sorting logic
+    if (sort) {
+      switch (sort) {
+        case "price-asc":
+          query = query.sort({ price: 1 });
+          break;
+        case "price-desc":
+          query = query.sort({ price: -1 });
+          break;
+        case "newest":
+          query = query.sort({ createdAt: -1 });
+          break;
+        case "featured":
+          // If "featured" is sort criteria, newest featured first
+          query = query.sort({ featured: -1, createdAt: -1 });
+          break;
+        default:
+          break;
+      }
+    }
+
+    const totalProducts = await Product.countDocuments(filter);
+    const totalPages = Math.ceil(totalProducts / Number(limit));
+
+    const products = await query
+      .skip((Number(page) - 1) * Number(limit))
+      .limit(Number(limit));
+
+    res.status(200).json({
+      products,
+      totalProducts,
+      totalPages,
+      currentPage: Number(page),
+    });
   } catch (error) {
     HandleError(res, error, "getAllProducts controller");
   }
