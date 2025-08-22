@@ -29,7 +29,7 @@ export const useProductStore = create<ProductStore>((set) => ({
         totalPages: res.data.totalPages ?? 1,
       });
     } catch (error) {
-      handleAxiosError(error, "Error in get getProducts method");
+      handleAxiosError(error, "Error in  getProducts method");
     } finally {
       set({ loading: false });
     }

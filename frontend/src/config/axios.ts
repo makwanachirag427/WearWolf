@@ -3,7 +3,7 @@ import { useAuthStore } from "../store/useAuthStore";
 
 // Create a reusable axios instance with default settings
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: "http://localhost:5001/api", // All requests will start with this base URL
+  baseURL: import.meta.env.DEV ?  "http://localhost:5001/api" : "/api", // All requests will start with this base URL
   withCredentials: true, // Send cookies with requests (needed for refresh token cookies)
 });
 
