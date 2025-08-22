@@ -3,7 +3,6 @@ import {
   createProduct,
   deleteProduct,
   getAllProducts,
-  getFeaturedProducts,
   getProductById,
   getRecommendedProducts,
   toggleFeaturedProducts,
@@ -16,7 +15,6 @@ const router = express.Router();
 // public routes
 router.get("/", getAllProducts);
 router.get("/recommendations",getRecommendedProducts);
-router.get("/featured", getFeaturedProducts);
 router.get("/product/:id", getProductById);
 
 //admin only

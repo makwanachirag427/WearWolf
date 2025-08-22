@@ -58,5 +58,18 @@ export const useAuthStore = create<AuthStore>((set) => ({
       set({ isCheckingAuth: false });
     }
   },
+  updateAddress: async (formData) => {
+    set({ loading: true });
+    try {
+      const res = await axios.patch("/user/address",  formData );
+      set((prevState) => ({
+        user: { ...prevState.user!, address: res.data.address },
+      }));
+      toast.success("Address updated/added successfully");
+    } catch (error) {
+      handleAxiosError(error, "Error in updateAddress");
+    } finally {
+      set({ loading: false });
+    }
+  },
 }));
-

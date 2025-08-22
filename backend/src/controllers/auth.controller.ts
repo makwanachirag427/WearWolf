@@ -35,17 +35,13 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
 
     if (user && (await user.comparePassword(password))) {
       const { accessToken, refreshToken } = generateToken(user._id.toString());
       setCookies(res, accessToken, refreshToken);
-      res.status(200).json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      });
+      user.password = "";
+      res.status(200).json(user);
     } else {
       res.status(400).json({ message: "Email or password is incorrect" });
     }
@@ -109,4 +105,3 @@ export const refreshToken = async (
     HandleError(res, error, "refreshToken controller");
   }
 };
-

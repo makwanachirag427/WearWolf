@@ -15,10 +15,9 @@ const HomePage = () => {
     sort: undefined,
     featured: false,
   });
-  const { products, loading, currentPage, totalPages, getProducts } =
-    useProductStore();
+  const { products, loading, totalPages, getProducts } = useProductStore();
   const [showFilters, setShowFilters] = useState<boolean>(false);
-  const [page,setPage]  = useState<number>(currentPage);
+  const [page, setPage] = useState<number>(1);
 
   useEffect(() => {
     getProducts({
@@ -29,18 +28,24 @@ const HomePage = () => {
       featured: filters.featured,
       page,
     });
-  }, [
-    filters,
-    page,
-    getProducts
-  ]);
+  }, [filters, page, getProducts]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [filters]);
+
   return (
     <div className="h-full pt-14">
       <div className="h-full  flex flex-col md:flex-row gap-6 p-6 md:gap-0 md:p-0">
         {/* sidebar filters for desktop  */}
-        <div className="hidden md:block fixed top-14  left-0 md:w-64 h-full">
+        <motion.div
+          initial={{ x: -200, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="hidden md:block fixed top-14  left-0 md:w-64 h-full"
+        >
           <ProductFilters filters={filters} setFilters={setFilters} />
-        </div>
+        </motion.div>
 
         {/* Mobile filter button */}
         <div className="md:hidden flex justify-end mb-4">
@@ -69,12 +74,16 @@ const HomePage = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center w-full">
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6 px-5 py-10 md:ml-64">
+            <motion.div
+              initial={{ x: 200, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-6 px-5 py-10 md:ml-64"
+            >
               {products.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
-            </div>
-            
+            </motion.div>
 
             {/* Pagination */}
             <div className="flex justify-center items-center gap-2 my-6 md:ml-64">
@@ -88,7 +97,6 @@ const HomePage = () => {
 
               <span className="px-3 py-1 font-semibold">
                 Page {page} of {totalPages}
-              
               </span>
 
               <button
@@ -108,7 +116,7 @@ const HomePage = () => {
             <motion.div
               initial={{ x: -200 }}
               animate={{ x: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
               className="w-3/4 max-w-xs bg-neutral-900 h-full p-4 shadow-lg"
             >
               <div className="flex justify-between items-center mb-4">

@@ -8,7 +8,7 @@ import Order from "../models/order.model";
 
 const FRONTEND_URL = ENVVARS.CLIENT_URL;
 
-export const createCheckoutSuccess = async (
+export const createCheckoutSession = async (
   req: RequestType,
   res: Response
 ): Promise<void> => {
@@ -53,7 +53,7 @@ export const createCheckoutSuccess = async (
       }
     }
 
-    const sesson = await stripe.checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
       line_items: lineItems,
@@ -80,15 +80,13 @@ export const createCheckoutSuccess = async (
     });
 
     if (totalAmount >= 20000) {
-      console.log("Creating new coupon", req.user?._id.toString());
+      // console.log("Creating new coupon", req.user?._id.toString());
       await createNewCoupon(req.user!._id.toString());
     }
 
-    res
-      .status(200)
-      .json({ sessionId: sesson.id, totalAmount: totalAmount / 100 });
+    res.status(200).json({ id: session.id, totalAmount: totalAmount / 100 });
   } catch (error) {
-    HandleError(res, error, "createCheckoutSuccess controller");
+    HandleError(res, error, "createCheckoutSession controller");
   }
 };
 
@@ -104,7 +102,7 @@ async function createNewCoupon(userId: string) {
   await Coupon.findOneAndDelete({ userId });
 
   const newCoupon = new Coupon({
-    code: "GIFT" + Math.random().toString(36).substring(2, 8).toUpperCase(),
+    code: "WOLF" + Math.random().toString(36).substring(2, 8).toUpperCase(),
     discountPercentage: 10,
     expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
     userId: userId,
@@ -125,6 +123,17 @@ export const checkoutSuccess = async (
 
     if (session.payment_status === "paid") {
       const metadata = session.metadata as SessionMetadata;
+
+      const existingOrder = await Order.findOne({ stripeSessionId: sessionId });
+      if (existingOrder) {
+         res.status(200).json({
+          success: true,
+          message: "Order already exists for this session",
+          orderId: existingOrder._id,
+        });
+        return;
+      }
+
       if (metadata.couponCode) {
         await Coupon.findOneAndUpdate(
           {

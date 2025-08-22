@@ -1,7 +1,7 @@
 import {
-  BarChart,
-  PlusCircle,
-  ShoppingBasket,
+  ColumnsSettings,
+  LineChart,
+  Package,
   type LucideIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -11,9 +11,9 @@ import AnalyticsTab from "../components/AnalyticsTab";
 import { useState } from "react";
 
 const tabs: { id: string; label: string; icon: LucideIcon }[] = [
-  { id: "create", label: "Create Product", icon: PlusCircle },
-  { id: "products", label: "Products", icon: ShoppingBasket },
-  { id: "analytics", label: "Analytics", icon: BarChart },
+  { id: "create", label: "Create Product", icon: Package },
+  { id: "products", label: "Products", icon: ColumnsSettings },
+  { id: "analytics", label: "Insights", icon: LineChart },
 ];
 
 const AdminPage = () => {
@@ -36,7 +36,7 @@ const AdminPage = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex  items-center gap-1 sm:gap-5  px-2 py-1.5 sm:px-5 sm:py-2 
+              className={`flex  items-center gap-1 sm:gap-2  px-2 py-1.5 sm:px-5 sm:py-2 
              font-semibold text-white text-sm sm:text-lg
              rounded-md  transition-all duration-300 ease-in-out ${
                activeTab === tab.id

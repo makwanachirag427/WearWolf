@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { ENVVARS } from "./uitls/envVars";
 import { connectDB } from "./config/db";
+import path from "path";
 
 //routes
 import authRoutes from "./routes/auth.route";
@@ -11,7 +12,7 @@ import productRoutes from "./routes/product.route";
 import cartRoutes from "./routes/cart.route";
 import paymentRoutes from "./routes/payment.route";
 import couponRoutes from "./routes/coupon.route";
-import analyticsRoutes from "./routes/coupon.route";
+import analyticsRoutes from "./routes/analytics.route";
 
 const app = express();
 const PORT = ENVVARS.PORT || 5000;
@@ -33,6 +34,14 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/analytics", analyticsRoutes);
+
+if (ENVVARS.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../../frontend", "dist", "index.html"));
+  });
+}
 
 app.listen(PORT, async () => {
   await connectDB();

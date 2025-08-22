@@ -101,9 +101,9 @@ const CreateProductForm = () => {
       .filter((file): file is File => file instanceof File)
       .forEach((file) => formData.append("images", file));
 
-    for (const [key, value] of formData.entries()) {
-      console.log(key, ":", value);
-    }
+    // for (const [key, value] of formData.entries()) {
+    //   console.log(key, ":", value);
+    // }
 
     createProduct(formData);
     handleReset();

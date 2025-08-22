@@ -94,17 +94,6 @@ export const getProductById = async (
   }
 };
 
-export const getFeaturedProducts = async (
-  req: RequestType,
-  res: Response
-): Promise<void> => {
-  try {
-    const featuredProducts = await Product.find({ isFeatured: true });
-    res.status(200).json(featuredProducts);
-  } catch (error) {
-    HandleError(res, error, "getFeaturedProducts controller");
-  }
-};
 
 export const getRecommendedProducts = async (
   req: RequestType,

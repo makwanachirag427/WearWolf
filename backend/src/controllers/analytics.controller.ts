@@ -3,6 +3,7 @@ import { AnalyticsData, RequestType } from "../types";
 import { HandleError } from "../uitls/error";
 import User from "../models/user.model";
 import Order from "../models/order.model";
+import Product from "../models/product.model";
 
 export const getData = async (
   req: RequestType,
@@ -15,6 +16,10 @@ export const getData = async (
     const startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     const dailySalesData = await getDailySalesData(startDate, endDate);
+    res.json({
+      analyticsData,
+      dailySalesData,
+    });
   } catch (error) {
     HandleError(res, error, "getData controller");
   }
@@ -22,7 +27,7 @@ export const getData = async (
 
 async function getAnalyticsData(): Promise<AnalyticsData> {
   const totalUsers = await User.countDocuments();
-  const totalProducts = await User.countDocuments();
+  const totalProducts = await Product.countDocuments();
 
   const salesData = await Order.aggregate([
     {
@@ -47,7 +52,16 @@ async function getAnalyticsData(): Promise<AnalyticsData> {
   };
 }
 
-async function getDailySalesData(startDate: Date, endDate: Date) {
+async function getDailySalesData(
+  startDate: Date,
+  endDate: Date
+): Promise<
+  {
+    date: string;
+    sales: number;
+    revenue: number;
+  }[]
+> {
   try {
     const dailySalesData = await Order.aggregate([
       {

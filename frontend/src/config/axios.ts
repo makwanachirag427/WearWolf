@@ -23,11 +23,11 @@ axiosInstance.interceptors.response.use(
     const authStore = useAuthStore.getState();
 
     // Debug log for visibility
-    console.log("[Interceptor] Error caught:", {
-      url: originalRequest.url, // Which endpoint caused the error
-      status: error.response?.status, // HTTP status code
-      retry: originalRequest._retry, // Whether we already retried
-    });
+    // console.log("[Interceptor] Error caught:", {
+    //   url: originalRequest.url, // Which endpoint caused the error
+    //   status: error.response?.status, // HTTP status code
+    //   retry: originalRequest._retry, // Whether we already retried
+    // });
 
     // Check if:
     // 1. The server says "Unauthorized" (401)
@@ -38,7 +38,7 @@ axiosInstance.interceptors.response.use(
       !originalRequest._retry &&
       !originalRequest.url?.includes("/auth/refresh")
     ) {
-      console.log("[Interceptor] Attempting refresh...");
+      // console.log("[Interceptor] Attempting refresh...");
 
       // Mark that we've already retried this request
       originalRequest._retry = true;
@@ -49,13 +49,13 @@ axiosInstance.interceptors.response.use(
           withCredentials: true, // Send refresh token cookie
         });
 
-        console.log("[Interceptor] Refresh successful, retrying request...");
+        // console.log("[Interceptor] Refresh successful, retrying request...");
 
         // Retry the original failed request with the new token
         return axiosInstance(originalRequest);
       } catch (refreshErr) {
         // If refresh fails (expired/invalid), log the user out
-        console.log("[Interceptor] Refresh failed:", refreshErr);
+        // console.log("[Interceptor] Refresh failed:", refreshErr);
         authStore.logout();
         return Promise.reject(refreshErr); // Pass the error back to the caller
       }

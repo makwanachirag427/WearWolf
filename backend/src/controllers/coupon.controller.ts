@@ -42,11 +42,7 @@ export const validateCoupon = async (
 
     res
       .status(200)
-      .json({
-        message: "Coupon is valid",
-        code: coupon.code,
-        discountPercentage: coupon.discountPercentage,
-      });
+      .json(coupon);
   } catch (error) {
     HandleError(res, error, "validateCoupon controller");
   }

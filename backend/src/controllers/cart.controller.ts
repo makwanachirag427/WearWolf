@@ -40,7 +40,7 @@ export const addToCart = async (
     const user = req.user!;
 
     const existingItem = user.cartItems.find(
-      (item) => item.product.toString() === productId
+      (item) => item.product === productId
     );
 
     if (existingItem) {
@@ -92,7 +92,7 @@ export const removeAllFromCart = async (
       user.cartItems = [];
     } else {
       user.cartItems = user.cartItems.filter(
-        (item) => item.product.toString() !== productId
+        (item) => item.product.toString() !== productId.toString()
       );
     }
     await user.save();

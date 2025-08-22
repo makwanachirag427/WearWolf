@@ -1,20 +1,20 @@
 import { Link } from "react-router-dom";
 import {
   CircleUser,
-  Lock,
   LogIn,
   LogOut,
+  Settings,
   ShoppingCart,
   UserPlus,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuthStore } from "../store/useAuthStore";
+import { useCartStore } from "../store/useCartStore";
 
 const Navbar = () => {
   const { user, logout } = useAuthStore();
   const isAdmin = user?.role === "admin";
-
-  
+  const { cartItems } = useCartStore();
 
   return (
     <header className="fixed top-0 left-0 w-full border-b-1 border-gray-800 p-3 z-20 bg-neutral-900">
@@ -38,7 +38,7 @@ const Navbar = () => {
           >
             Home
           </Link>
-          { user ?  (
+          {user ? (
             <>
               <Link
                 to={"/cart"}
@@ -46,17 +46,23 @@ const Navbar = () => {
               >
                 <ShoppingCart className="size-5" />
                 <span className="hidden sm:flex">Cart</span>
-                {/* <span className="absolute  -top-2.5 -left-2 bg-red-500 size-5.5 rounded-full flex justify-center items-center  text-sm font-semibold text-white">2</span> */}
+                {cartItems.length > 0 && (
+                  <span className="absolute  -top-2.5 -left-2 bg-red-500 size-5.5 rounded-full flex justify-center items-center  text-sm font-semibold text-white">
+                    {cartItems.length}
+                  </span>
+                )}
               </Link>
               {isAdmin && (
                 <Link
                   to={"/admin-dashboard"}
-                  className="flex items-center gap-2  p-2 sm:px-4 sm:py-1 
-             font-bold text-white bg-red-600 
-             rounded-lg  transition-all duration-300 ease-in-out
-             hover:bg-red-700"
+                  className="flex items-center gap-1  p-2 sm:px-4 sm:py-1.5
+               font-semibold border
+             rounded-lg  transition duration-300 ease-in-out group"
                 >
-                  <Lock className="size-4" strokeWidth={"2.5px"} />
+                  <Settings
+                    className="size-5 group-hover:animate-spin"
+                    strokeWidth={2.5}
+                  />
                   <span className="hidden sm:flex">Dashboard</span>
                 </Link>
               )}
@@ -67,7 +73,7 @@ const Navbar = () => {
              hover:bg-gray-200"
                 onClick={logout}
               >
-                <LogOut className="size-4 sm:size-5" strokeWidth={"1.8px"} />
+                <LogOut className="size-4 sm:size-5" strokeWidth={2} />
                 <span className="hidden sm:flex">Log Out</span>
               </button>
               <Link to={"/profile"}>

@@ -23,7 +23,7 @@ export const useProductStore = create<ProductStore>((set) => ({
           ...(filters.limit && { limit: filters.limit }),
         },
       });
-       set({
+      set({
         products: res.data.products,
         currentPage: res.data.currentPage ?? 1,
         totalPages: res.data.totalPages ?? 1,
@@ -34,8 +34,6 @@ export const useProductStore = create<ProductStore>((set) => ({
       set({ loading: false });
     }
   },
-  getProductById: async (id) => {},
-  getFeaturedProducts: async () => {},
   getRecommendedProducts: async () => {},
   toggleFeaturedProducts: async (id) => {
     try {
@@ -54,8 +52,7 @@ export const useProductStore = create<ProductStore>((set) => ({
   createProduct: async (formData) => {
     set({ loading: true });
     try {
-      const res = await axios.post("/products/create", formData);
-      console.log(res.data);
+      await axios.post("/products/create", formData);
       toast.success("product created successfully");
     } catch (error) {
       handleAxiosError(error, "Error in createProduct method");

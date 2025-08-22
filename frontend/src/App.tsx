@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import { useAuthStore } from "./store/useAuthStore";
 import { useEffect, Suspense, lazy } from "react";
 import LoaderScreen from "./components/LoaderScreen";
+import { useCartStore } from "./store/useCartStore";
 
 //using lazy loading using suspense and lazy
 
@@ -12,9 +13,20 @@ const SignUpPage = lazy(() => import("./pages/SignUpPage"));
 const LogInPage = lazy(() => import("./pages/LogInPage"));
 const AdminPage = lazy(() => import("./pages/AdminPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const CartPage = lazy(() => import("./pages/CartPage"));
+const PurchaseSuccessPage = lazy(() => import("./pages/PurchaseSuccessPage"));
+const PurchaseCancelPage = lazy(() => import("./pages/PurchaseCancelPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
+const ProductPage = lazy(() => import("./pages/ProductPage"));
 
 const App = () => {
   const { user, isCheckingAuth, checkAuth } = useAuthStore();
+  const { getCartItems } = useCartStore();
+
+  useEffect(() => {
+    if (!user) return;
+    getCartItems();
+  }, [user, getCartItems]);
 
   useEffect(() => {
     checkAuth();
@@ -27,7 +39,7 @@ const App = () => {
   return (
     <div className="min-h-screen  app-bg text-white flex">
       <Navbar />
-      <main className="flex-1 w-full min-h-full">
+      <main className="flex-1 w-full min-h-full bg-black/50">
         <Suspense fallback={<LoaderScreen />}>
           <Routes>
             <Route path={"/"} element={<HomePage />} />
@@ -49,6 +61,24 @@ const App = () => {
               path={"/profile"}
               element={user ? <ProfilePage /> : <Navigate to={"/"} />}
             />
+            <Route
+              path={"/purchase-cancel"}
+              element={
+                user ? <PurchaseCancelPage /> : <Navigate to={"/login"} />
+              }
+            />
+            <Route
+              path={"/purchase-success"}
+              element={
+                user ? <PurchaseSuccessPage /> : <Navigate to={"/login"} />
+              }
+            />
+            <Route
+              path={"/cart"}
+              element={user ? <CartPage /> : <Navigate to={"/login"} />}
+            />
+            <Route path={"/product/:product_id"} element={<ProductPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
       </main>
