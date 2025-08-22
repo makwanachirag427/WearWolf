@@ -15,7 +15,7 @@ import couponRoutes from "./routes/coupon.route";
 import analyticsRoutes from "./routes/analytics.route";
 
 const app = express();
-const PORT = ENVVARS.PORT || 5000;
+const PORT = ENVVARS.PORT || 5001;
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));

@@ -6,7 +6,10 @@ import { stripe } from "../config/stripe";
 import { ENVVARS } from "../uitls/envVars";
 import Order from "../models/order.model";
 
-const FRONTEND_URL = ENVVARS.CLIENT_URL;
+const FRONTEND_URL =
+  ENVVARS.NODE_ENV === "development"
+    ? ENVVARS.CLIENT_URL
+    : "https://wearwolf.onrender.com";
 
 export const createCheckoutSession = async (
   req: RequestType,
@@ -126,7 +129,7 @@ export const checkoutSuccess = async (
 
       const existingOrder = await Order.findOne({ stripeSessionId: sessionId });
       if (existingOrder) {
-         res.status(200).json({
+        res.status(200).json({
           success: true,
           message: "Order already exists for this session",
           orderId: existingOrder._id,
