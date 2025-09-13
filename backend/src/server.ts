@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { ENVVARS } from "./uitls/envVars";
 import { connectDB } from "./config/db";
-import path from "path";
+// import path from "path";
 
 //routes
 import authRoutes from "./routes/auth.route";
@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://wearwolf.onrender.com",
     credentials: true,
   })
 );
@@ -35,13 +35,13 @@ app.use("/api/payments", paymentRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
-if (ENVVARS.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+// if (ENVVARS.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "../../frontend/dist")));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../../frontend", "dist", "index.html"));
-  });
-}
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "../../frontend", "dist", "index.html"));
+//   });
+// }
 
 app.listen(PORT, async () => {
   await connectDB();
