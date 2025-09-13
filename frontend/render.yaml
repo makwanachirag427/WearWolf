@@ -1,6 +1,0 @@
-# A `render.yaml` file for redirecting all requests to index.html
-staticSite:
-  redirects:
-    - from: /*
-      to: /index.html
-      status: 200
