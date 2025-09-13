@@ -5,11 +5,13 @@ import axios, {
 } from "axios";
 import { useAuthStore } from "../store/useAuthStore";
 
+const apiBaseURL = import.meta.env.DEV
+  ? "http://localhost:5001/api"
+  : "https://wearwolf-backend.onrender.com/api";
+
 // Create a reusable axios instance with default settings
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: import.meta.env.DEV
-    ? "http://localhost:5001/api"
-    : "https://wearwolf-backend.onrender.com/api", // All requests will start with this base URL
+  baseURL: apiBaseURL, // All requests will start with this base URL
   withCredentials: true, // Send cookies with requests (needed for refresh token cookies)
 });
 
@@ -51,13 +53,9 @@ axiosInstance.interceptors.response.use(
 
       try {
         // Call the refresh token endpoint to get a new access token
-        await axios.post(
-          "https://wearwolf-backend.onrender.com/api/auth/refresh-token",
-          null,
-          {
-            withCredentials: true, // Send refresh token cookie
-          }
-        );
+        await axios.post(`${apiBaseURL}/auth/refresh-token`, null, {
+          withCredentials: true, // Send refresh token cookie
+        });
 
         // console.log("[Interceptor] Refresh successful, retrying request...");
 

@@ -21,16 +21,17 @@ export const setCookies = (
   accessToken: string,
   refreshToken: string
 ): void => {
+  const isProd = ENVVARS.NODE_ENV === "production";
   res.cookie("accessToken", accessToken, {
     maxAge: 15 * 60 * 1000,
     httpOnly: true,
-    sameSite: "strict",
-    secure: ENVVARS.NODE_ENV !== "development",
+    sameSite: isProd ? "none" : "lax",
+    secure: isProd,
   });
   res.cookie("refreshToken", refreshToken, {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "strict",
-    secure: ENVVARS.NODE_ENV !== "development",
+    sameSite: "none",
+    secure: isProd,
   });
 };
