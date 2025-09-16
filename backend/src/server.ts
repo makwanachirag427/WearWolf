@@ -15,17 +15,13 @@ import analyticsRoutes from "./routes/analytics.route";
 
 const app = express();
 const PORT = ENVVARS.PORT || 5001;
-const FRONTEND_URL =
-  ENVVARS.NODE_ENV === "development"
-    ? ENVVARS.CLIENT_URL
-    : "https://wearwolf.onrender.com";
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: FRONTEND_URL,
+    origin: ["http://localhost:5173", "https://wearwolf.onrender.com"],
     credentials: true,
   })
 );
@@ -37,8 +33,6 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/analytics", analyticsRoutes);
-
-
 
 app.listen(PORT, async () => {
   await connectDB();

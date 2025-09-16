@@ -7,7 +7,7 @@ import { useAuthStore } from "../store/useAuthStore";
 
 const apiBaseURL = import.meta.env.DEV
   ? "http://localhost:5001/api"
-  : "https://wearwolf-backend.onrender.com/api";
+  : "https://wearwolf-production.up.railway.app/api";
 
 // Create a reusable axios instance with default settings
 const axiosInstance: AxiosInstance = axios.create({
