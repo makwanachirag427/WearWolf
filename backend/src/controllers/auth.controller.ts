@@ -92,12 +92,12 @@ export const refreshToken = async (
       ENVVARS.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" }
     );
-
+    const isProd = ENVVARS.NODE_ENV === "production";
     res.cookie("accessToken", accessToken, {
       maxAge: 15 * 60 * 1000,
       httpOnly: true,
       sameSite: "strict",
-      secure: ENVVARS.NODE_ENV !== "development",
+      secure: isProd,
     });
 
     res.json({ message: "Token refreshed successfully" });
